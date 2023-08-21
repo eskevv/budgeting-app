@@ -1,26 +1,19 @@
 // rrd imports
-import { Form, Link } from "react-router-dom";
+import {Form, Link} from "react-router-dom";
 
 // library imports
-import { BanknotesIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {BanknotesIcon, TrashIcon} from "@heroicons/react/24/outline";
 
 // helper functions
-import {
-  calculateSpentByBudget,
-  formatCurrency,
-  formatPercentage,
-} from "../helpers";
+import {calculateSpentByBudget, formatCurrency, formatPercentage,} from "../helpers";
 
-const BudgetItem = ({ budget, showDelete = false }) => {
-  const { id, name, amount, color } = budget;
-  const spent = calculateSpentByBudget(id);
+const BudgetItem = ({budget, showDelete = false, spent}) => {
+  const {id, name, amount, color} = budget;
 
   return (
     <div
       className="budget"
-      style={{
-        "--accent": color,
-      }}
+      style={{ "--accent": color, }}
     >
       <div className="progress-text">
         <h3>{name}</h3>
@@ -39,18 +32,14 @@ const BudgetItem = ({ budget, showDelete = false }) => {
             method="post"
             action="delete"
             onSubmit={(event) => {
-              if (
-                !confirm(
-                  "Are you sure you want to permanently delete this budget?"
-                )
-              ) {
+              if ( !confirm("Are you sure you want to permanently delete this budget?") ) {
                 event.preventDefault();
               }
             }}
           >
             <button type="submit" className="btn">
               <span>Delete Budget</span>
-              <TrashIcon width={20} />
+              <TrashIcon width={20}/>
             </button>
           </Form>
         </div>
@@ -58,7 +47,7 @@ const BudgetItem = ({ budget, showDelete = false }) => {
         <div className="flex-sm">
           <Link to={`/budget/${id}`} className="btn">
             <span>View Details</span>
-            <BanknotesIcon width={20} />
+            <BanknotesIcon width={20}/>
           </Link>
         </div>
       )}

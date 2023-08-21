@@ -54,6 +54,12 @@ public class ExpenseController {
     return ResponseEntity.ok(updatedExpense);
   }
 
+  @DeleteMapping
+  public ResponseEntity<Void> deleteExpenses() {
+    expenseRepository.deleteAll();
+    return ResponseEntity.noContent().build();
+  }
+
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteExpense(@PathVariable Long id) {
     if (!expenseRepository.existsById(id)) {

@@ -1,5 +1,3 @@
-import {toast} from "react-toastify";
-
 export const waait = () =>
   new Promise((res) => setTimeout(res, Math.random() * 800));
 
@@ -14,8 +12,7 @@ export const fetchData = (key) => {
   return JSON.parse(localStorage.getItem(key));
 };
 
-export async function fetchBudgets () {
-  console.log("fetching")
+export async function fetchBudgets() {
   try {
     let res = await fetch('http://localhost:8080/api/budgets')
     return await res.json()
@@ -24,9 +21,7 @@ export async function fetchBudgets () {
   }
 }
 
-
-export async function fetchExpenses () {
-  console.log("fetching expenses")
+export async function fetchExpenses() {
   try {
     let res = await fetch('http://localhost:8080/api/expenses')
     return await res.json()
@@ -34,12 +29,6 @@ export async function fetchExpenses () {
     throw new Error("There was a problem creating your account.");
   }
 }
-
-// Get all items from local storage
-export const getAllMatchingItems = ({category, key, value}) => {
-  const data = fetchData(category) ?? [];
-  return data.filter((item) => item[key] === value);
-};
 
 // delete item from local storage
 export const deleteItem = ({key, id}) => {
@@ -52,7 +41,7 @@ export const deleteItem = ({key, id}) => {
 };
 
 // create budget
-export async function createBudget ({name, amount}) {
+export async function createBudget({name, amount}) {
   const newItem = {
     name: name,
     createdAt: Date.now(),
@@ -85,9 +74,21 @@ export async function createExpense({name, amount, budgetId}) {
   });
 }
 
+export async function calculateBudgetExpenses() {
+  let spendings = {}
+  const expenses = await fetchExpenses()
+  for (let expense of expenses) {
+    if (!spendings.hasOwnProperty(expense.budget.id)) {
+      spendings[expense.budget.id] = 0;
+    }
+    spendings[expense.budget.id] += +expense.amount
+  }
+  return spendings
+}
+
 // total spent by budget
-export const calculateSpentByBudget = (budgetId) => {
-  const expenses = fetchData("expenses") ?? [];
+export async function calculateSpentByBudget(budgetId) {
+  const expense = await fetchExpenses()
   const budgetSpent = expenses.reduce((acc, expense) => {
     // check if expense.id === budgetId I passed in
     if ( expense.budgetId !== budgetId ) return acc;
@@ -96,7 +97,7 @@ export const calculateSpentByBudget = (budgetId) => {
     return (acc += expense.amount);
   }, 0);
   return budgetSpent;
-};
+}
 
 // FORMATTING
 export const formatDateToLocaleString = (epoch) =>

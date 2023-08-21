@@ -13,25 +13,26 @@ import Table from "../components/Table";
 
 //  helper functions
 import {
+  calculateBudgetExpenses,
   createBudget,
   createExpense,
-  deleteItem, fetchBudgets,
-  fetchData, fetchExpenses,
-  waait,
+  fetchBudgets,
+  fetchData,
+  fetchExpenses,
 } from "../helpers";
 
 // loader
 export async function dashboardLoader() {
-  console.log("loader")
+  console.log("load")
   const userName = fetchData("userName");
   const budgets = await fetchBudgets();
   const expenses = await fetchExpenses();
-  return {userName, budgets, expenses};
+  const budgetSpent = await calculateBudgetExpenses()
+  return {userName, budgets, expenses, budgetSpent};
 }
 
 // action
 export async function dashboardAction({request}) {
-  console.log("action")
   const data = await request.formData();
   const {_action, ...values} = Object.fromEntries(data);
 
@@ -79,10 +80,9 @@ export async function dashboardAction({request}) {
 
   if ( _action === "deleteExpense" ) {
     try {
-      deleteItem({
-        key: "expenses",
-        id: values.expenseId,
-      });
+      await fetch(`http://localhost:8080/api/expenses/${values.expenseId}`, {
+        method: "DELETE"
+      })
       return toast.success("Expense deleted!");
     } catch (e) {
       throw new Error("There was a problem deleting your expense.");
@@ -91,7 +91,7 @@ export async function dashboardAction({request}) {
 }
 
 const Dashboard = () => {
-  const {userName, budgets, expenses} = useLoaderData();
+  const {userName, budgets, expenses, budgetSpent} = useLoaderData();
   return (
     <>
       {userName ? (
@@ -109,13 +109,13 @@ const Dashboard = () => {
                 <h2>Existing Budgets</h2>
                 <div className="budgets">
                   {budgets.map((budget) => (
-                    <BudgetItem key={budget.id} budget={budget}/>
+                    <BudgetItem key={budget.id} budget={budget} spent={budgetSpent[budget.id] ?? 0}/>
                   ))}
                 </div>
                 {expenses && expenses.length > 0 && (
                   <div className="grid-md">
                     <h2>Recent Expenses</h2>
-                    <Table expenses={expenses.sort((a, b) => b.createdAt - a.createdAt).slice(0, 8)} />
+                    <Table expenses={expenses.sort((a, b) => b.createdAt - a.createdAt).slice(0, 8)}/>
                     {expenses.length > 8 && (
                       <Link to="expenses" className="btn btn--dark">
                         View all expenses

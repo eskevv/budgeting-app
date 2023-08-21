@@ -20,6 +20,18 @@ export async function logoutAction() {
   })
 
   try {
+    const response = await fetch('http://localhost:8080/api/expenses', {
+      method: 'DELETE'
+    });
+    if ( response.ok ) {
+      console.log('All expenses deleted successfully.');
+    } else {
+      console.error('Error deleting expenses.');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+  }
+  try {
     const response = await fetch('http://localhost:8080/api/budgets', {
       method: 'DELETE'
     });
