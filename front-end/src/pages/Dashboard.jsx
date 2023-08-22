@@ -23,7 +23,6 @@ import {
 
 // loader
 export async function dashboardLoader() {
-  console.log("load")
   const userName = fetchData("userName");
   const budgets = await fetchBudgets();
   const expenses = await fetchExpenses();

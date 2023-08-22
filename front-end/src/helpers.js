@@ -2,8 +2,10 @@ export const waait = () =>
   new Promise((res) => setTimeout(res, Math.random() * 800));
 
 // colors
-const generateRandomColor = () => {
-  const existingBudgetLength = fetchData("budgets")?.length ?? 0;
+export async function generateRandomColor () {
+  const res = await fetch('http://localhost:8080/api/budgets')
+  const budgets = await res.json()
+  const existingBudgetLength = budgets?.length ?? 0;
   return `${existingBudgetLength * 34} 65% 50%`;
 };
 
@@ -46,7 +48,7 @@ export async function createBudget({name, amount}) {
     name: name,
     createdAt: Date.now(),
     amount: +amount,
-    color: generateRandomColor(),
+    color: await generateRandomColor(),
   };
   const r = await fetch("http://localhost:8080/api/budgets", {
     method: 'POST',

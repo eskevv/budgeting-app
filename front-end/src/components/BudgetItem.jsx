@@ -11,10 +11,7 @@ const BudgetItem = ({budget, showDelete = false, spent}) => {
   const {id, name, amount, color} = budget;
 
   return (
-    <div
-      className="budget"
-      style={{ "--accent": color, }}
-    >
+    <div className="budget" style={{ "--accent": color, }} >
       <div className="progress-text">
         <h3>{name}</h3>
         <p>{formatCurrency(amount)} Budgeted</p>
