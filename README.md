@@ -16,6 +16,6 @@ The app is not yet deployed but you can run it locally:
 
 ToDO:
 * user authentication + independent user data
-* category colors
+* ~~category colors~~
 
 ![](media/dashboard.png)
